@@ -22,7 +22,19 @@ export const createUser = createAsyncThunk('userSlice/createUser',async({email,p
 const userSlice = createSlice({
     name : 'userSlice',
     initialState,
-    reducers : {},
+    reducers : {
+      setUser : (state,{payload})=>{
+        state.name = payload.name;
+        state.email = payload.email; 
+      },
+      toggleLoading : (state,{payload})=>{
+        state.isLoading = payload;
+      },
+      logOut : (state)=>{
+        state.name = '';
+        state.email = ''; 
+      }
+    },
     extraReducers :(builder)=>{
       builder
       .addCase(createUser.pending,(state)=>{
@@ -39,14 +51,14 @@ const userSlice = createSlice({
         state.name = payload.name;
         state.error = '';
       })
-      .addCase(createUser.rejected,(state,{action})=>{
+      .addCase(createUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.email = '';
         state.name = '';
-        state.error = action.error.message;
+        state.error = action.error ? action.error.message : 'Unknown error';
       });
     }
 });
-
+export const {setUser,toggleLoading,logOut} = userSlice.actions;
 export default userSlice.reducer;
