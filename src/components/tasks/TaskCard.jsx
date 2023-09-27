@@ -1,10 +1,15 @@
 import { ArrowRightIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { useUpdateTasksMutation } from '../../redux/features/tasks/tasksApi';
+import { useDeleteTasksMutation, useUpdateTasksMutation } from '../../redux/features/tasks/tasksApi';
 
 
 const TaskCard = ({ task }) => {
-  const [updateTask,{data,error}] = useUpdateTasksMutation();
+  const [updateTask] = useUpdateTasksMutation();
+  const [deleteTasks] = useDeleteTasksMutation();
 
+  const handleDelete = (id) => {
+    console.log(id);
+    deleteTasks({ id });
+  };
   const handleUpdate = (id,updatedStatus)=>{
     const data = {
       status : updatedStatus,
@@ -15,8 +20,6 @@ const TaskCard = ({ task }) => {
     };
     updateTask(options);
   }
-  console.log(data);
-  console.log(error);
   let updatedStatus;
   if (task.status === 'pending') {
     updatedStatus = 'running';
@@ -41,7 +44,7 @@ const TaskCard = ({ task }) => {
       <div className="flex justify-between mt-3">
         <p>{task?.date}</p>
         <div className="flex gap-3">
-          <button onClick={() => console.log("remove")} title="Delete">
+          <button onClick={() => handleDelete(task._id)} title="Delete">
             <TrashIcon className="h-5 w-5 text-red-500" />
           </button>
           <button
